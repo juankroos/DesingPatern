@@ -1,10 +1,5 @@
 from abc import ABC, abstractmethod
-
-
-class Router:
-    def url(self):
-        return "https://"
-
+from functools import wraps
 
 class Routeinterface(ABC):
     @abstractmethod
@@ -19,24 +14,29 @@ class Routeinterface(ABC):
     def DeleteRoute(self, url):
         pass
 
+def route_method(func):
+    @wraps(func)
+    def wrapper(self, url):
+        return self.url() + url
+    return wrapper
 
-class Routedecorator(Routeinterface):
-    def __init__(self, router):
-        self._router = router  
+class Router(Routeinterface):
+    def url(self):
+        return "https://"
 
+    @route_method
     def GetRoute(self, url):
-        return self._router.url() + url
-        
+        pass
+
+    @route_method
     def PostRoute(self, url):
-        return self._router.url() + url
-        
+        pass
+
+    @route_method
     def DeleteRoute(self, url):
-        return self._router.url() + url
+        pass
 
-
-router = Router()  
-decorated_router = Routedecorator(router)  
-
-print(decorated_router.GetRoute("Getrouteurl//voila voila"))
-print(decorated_router.PostRoute("Postrouteurl//hehehehehe"))
-print(decorated_router.DeleteRoute("Deleterouteurl//inscroyable"))
+router = Router()
+print(router.GetRoute("Getrouteurl//voila voila"))
+print(router.PostRoute("Postrouteurl//hehehehehe"))
+print(router.DeleteRoute("Deleterouteurl//inscroyable"))
